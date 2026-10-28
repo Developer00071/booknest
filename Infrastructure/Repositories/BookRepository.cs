@@ -67,9 +67,60 @@ public class BookRepository : IBookRepository
         return conn.Query<Book>(query, new { genreId }).ToList();
     }
 
-  
+    public int GetBookAmount()
+    {
+        using var connection = Database.Connection();
+        connection.Open();
+        const string query = "select count(*) from books";
+        return connection.QuerySingle<int>(query);
+    }
+
+    public int GetGenresAmount()
+    {
+        using var connection = Database.Connection();
+        connection.Open();
+        const string query = "select count(*) from genres";
+        return connection.QuerySingle<int>(query);
+    }
+
+    public int? GetMinPublishedYearByGenre(int genreId)
+    {
+        using var connection = Database.Connection();
+        connection.Open();
+        const string query = @"select min(b.publishedyear)
+                               from books b
+                               join book_genres bg on b.id = bg.book_id
+                               where bg.genre_id = @genreId";
+        return connection.QuerySingle<int?>(query, new { genreId });
+    }
+
+    public int? GetMaxPublishedYearByGenre(int genreId)
+    {
+        using var connection = Database.Connection();
+        connection.Open();
+        const string query = @"select max(b.publishedyear)
+                               from books b
+                               join book_genres bg on b.id = bg.book_id
+                               where bg.genre_id = @genreId";
+        return connection.QuerySingle<int?>(query, new { genreId });
+    }
+
+    public int GetAmountByPublishedYear(int year)
+    {
+        using var connection = Database.Connection();
+        connection.Open();
+        const string query = "select count(*) from books where publishedyear = @year";
+        return connection.QuerySingle<int>(query, new { year });
+    }
+
+    public int GetAmountByGenre(int genreId)
+    {
+        using var connection = Database.Connection();
+        connection.Open();
+        const string query = "select count(distinct book_id) from book_genres where genre_id = @genreId";
+        return connection.QuerySingle<int>(query, new { genreId });
+    }
 }
 
     
     
-

@@ -11,4 +11,10 @@ public interface IBookRepository
     List<Book> SearchByGenre(int genreId);
     Book GetBook(int id);
     List<Book> GetBooks();
+    int GetBookAmount();
+    int GetGenresAmount();
+    int? GetMinPublishedYearByGenre(int genreId);
+    int? GetMaxPublishedYearByGenre(int genreId);
+    int GetAmountByPublishedYear(int year);
+    int GetAmountByGenre(int genreId);
 }
