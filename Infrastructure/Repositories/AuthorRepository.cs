@@ -7,76 +7,77 @@ namespace Infrastructure.Repositories;
 
 public class AuthorRepository : IAuthorRepository
 {
-    public void AddAuthor(Author author)
+    public async Task AddAuthorAsync(Author author)
     {
-        using var connection = Database.Connection();
-        connection.Open();
+        await using var connection = Database.Connection();
+        await connection.OpenAsync();
         const string query = "insert into authors(fullname, country, birthyear) values(@fullname, @country, @birthyear)";
-        connection.Execute(query, author);
+        await connection.ExecuteAsync(query, author);
     }
 
-    public void UpdateAuthor(Author author)
+    public async Task UpdateAuthorAsync(Author author)
     {
-        using var connection = Database.Connection();
-        connection.Open();
+        await using var connection = Database.Connection();
+        await connection.OpenAsync();
         const string query = "update authors set fullname = @fullname, country = @country, birthyear = @birthyear where id = @id";
-        connection.Execute(query, author);
+        await connection.ExecuteAsync(query, author);
         System.Console.WriteLine("Updated!");
     }
 
-    public void DeleteAuthor(int id)
+    public async Task DeleteAuthorAsync(int id)
     {
-        using var connection = Database.Connection();
-        connection.Open();
+        await using var connection = Database.Connection();
+        await connection.OpenAsync();
         const string query = "delete from authors where id = @id";
-        connection.Execute(query, new { id });
+        await connection.ExecuteAsync(query, new { id });
     }
 
-    public Author GetAuthor(int id)
+    public async Task<Author> GetAuthorAsync(int id)
     {
-        using var connection = Database.Connection();
-        connection.Open();
+        await using var connection = Database.Connection();
+        await connection.OpenAsync();
         const string query = "select id, fullname, country, birthyear from authors where id = @id";
-        var author = connection.QuerySingle<Author>(query, new { id });
+        var author = await connection.QuerySingleAsync<Author>(query, new { id });
         return author;
     }
 
-    public List<Author> GetAuthors()
+    public async Task<List<Author>> GetAuthorsAsync()
     {
-        using var connection = Database.Connection();
-        connection.Open();
+        await using var connection = Database.Connection();
+        await connection.OpenAsync();
         const string query = "select id, fullname, country, birthyear from authors";
-        return connection.Query<Author>(query).ToList();
+        var authors = await connection.QueryAsync<Author>(query);
+        return authors.ToList();
     }
 
-    public int GetAuthorsAmount()
+    public async Task<int> GetAuthorsAmountAsync()
     {
-        using var connection = Database.Connection();
-        connection.Open();
+        await using var connection = Database.Connection();
+        await connection.OpenAsync();
         const string query = "select count(*) from authors";
-        return connection.QuerySingle<int>(query);
+        return await connection.QuerySingleAsync<int>(query);
     }
 
-    public int? GetMinPublishedYearByAuthor(int authorId)
+    public async Task<int?> GetMinPublishedYearByAuthorAsync(int authorId)
     {
-        using var connection = Database.Connection();
-        connection.Open();
+        await using var connection = Database.Connection();
+        await connection.OpenAsync();
         const string query = @"select min(b.publishedyear)
                                from books b
                                join book_authors ba on b.id = ba.book_id
                                where ba.author_id = @authorId";
-        return connection.QuerySingle<int?>(query, new { authorId });
+        return await connection.QuerySingleAsync<int?>(query, new { authorId });
     }
 
-    public int? GetMaxPublishedYearByAuthor(int authorId)
+    public async Task<int?> GetMaxPublishedYearByAuthorAsync(int authorId)
     {
-        using var connection = Database.Connection();
-        connection.Open();
+        await using var connection = Database.Connection();
+        await connection.OpenAsync();
         const string query = @"select max(b.publishedyear)
                                from books b
                                join book_authors ba on b.id = ba.book_id
                                where ba.author_id = @authorId";
-        return connection.QuerySingle<int?>(query, new { authorId });
+        return await connection.QuerySingleAsync<int?>(query, new { authorId });
     }
 }
 

@@ -27,7 +27,7 @@ while (true)
     switch (a)
     {
         case "1":
-            var books = repo.GetBooks();
+            var books = await repo.GetBooksAsync();
             foreach(var b in books)
             {
                 System.Console.WriteLine(b.Id+" "+b.Title+" "+b.PublishedYear+" "+b.TotalCopies);
@@ -36,7 +36,7 @@ while (true)
         case "2":
             System.Console.Write("Enter id: ");
             var id = Convert.ToInt32(Console.ReadLine());
-            var bb = repo.GetBook(id);
+            var bb = await repo.GetBookAsync(id);
             System.Console.WriteLine(bb.Id+" "+bb.Title+" "+bb.PublishedYear+" "+bb.TotalCopies);
             break;
         case "3":
@@ -52,7 +52,7 @@ while (true)
                 PublishedYear = py,
                 TotalCopies = tc
             };
-            repo.AddBook(bbb);
+            await repo.AddBookAsync(bbb);
             break;
         case "4":
             System.Console.Write("Enter id: ");
@@ -70,15 +70,15 @@ while (true)
                 PublishedYear = upy,
                 TotalCopies = utc
             };
-            repo.UpdateBook(ubbb);
+            await repo.UpdateBookAsync(ubbb);
             break;
         case "5":
             System.Console.Write("Enter id: ");
             var did = Convert.ToInt32(Console.ReadLine());
-            repo.DeleteBook(did);
+            await repo.DeleteBookAsync(did);
             break;
         case "6":
-            var authors = authorRepo.GetAuthors();
+            var authors = await authorRepo.GetAuthorsAsync();
             foreach (var authori in authors)
             {
                 System.Console.WriteLine($"{authori.Id} {authori.Fullname} {authori.Country} {authori.BirthYear}");
@@ -87,7 +87,7 @@ while (true)
         case "7":
             System.Console.Write("Enter id: ");
             var authorId = Convert.ToInt32(Console.ReadLine());
-            var selectedAuthor = authorRepo.GetAuthor(authorId);
+            var selectedAuthor = await authorRepo.GetAuthorAsync(authorId);
             System.Console.WriteLine($"{selectedAuthor.Id} {selectedAuthor.Fullname} {selectedAuthor.Country} {selectedAuthor.BirthYear}");
             break;
         case "8":
@@ -97,7 +97,7 @@ while (true)
             var country = Console.ReadLine()!;
             System.Console.Write("Enter birth year: ");
             var birthYear = Convert.ToInt32(Console.ReadLine());
-            authorRepo.AddAuthor(new Author
+            await authorRepo.AddAuthorAsync(new Author
             {
                 Fullname = fullname,
                 Country = country,
@@ -113,7 +113,7 @@ while (true)
             var updateCountry = Console.ReadLine()!;
             System.Console.Write("Enter birth year: ");
             var updateBirthYear = Convert.ToInt32(Console.ReadLine());
-            authorRepo.UpdateAuthor(new Author
+            await authorRepo.UpdateAuthorAsync(new Author
             {
                 Id = updateAuthorId,
                 Fullname = updateFullname,
@@ -124,13 +124,13 @@ while (true)
         case "10":
             System.Console.Write("Enter id: ");
             var deleteAuthorId = Convert.ToInt32(Console.ReadLine());
-            authorRepo.DeleteAuthor(deleteAuthorId);
+            await authorRepo.DeleteAuthorAsync(deleteAuthorId);
             break;
         case "11":
             System.Console.Write("Enter author id: ");
             var searchAuthorId = Convert.ToInt32(Console.ReadLine());
-            var author = authorRepo.GetAuthor(searchAuthorId);
-            foreach (var book in repo.SearchByAuthor(author.Fullname))
+            var author = await authorRepo.GetAuthorAsync(searchAuthorId);
+            foreach (var book in await repo.SearchByAuthorAsync(author.Fullname))
             {
                 System.Console.WriteLine($"{book.Id} {book.Title} {book.PublishedYear} {book.TotalCopies}");
             }
@@ -138,7 +138,7 @@ while (true)
         case "12":
             System.Console.Write("Enter genre id: ");
             var searchGenreId = Convert.ToInt32(Console.ReadLine());
-            var booksByGenre = repo.SearchByGenre(searchGenreId);
+            var booksByGenre = await repo.SearchByGenreAsync(searchGenreId);
             foreach (var book in booksByGenre)
             {
                 System.Console.WriteLine($"{book.Id} {book.Title} {book.PublishedYear} {book.TotalCopies}");

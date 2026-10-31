@@ -4,17 +4,17 @@ namespace Domain.Interfaces;
 
 public interface IBookRepository
 {
-    void AddBook(Book book);
-    void UpdateBook(Book book);
-    void DeleteBook(int id);
-    List<Book> SearchByAuthor(string fullname);
-    List<Book> SearchByGenre(int genreId);
-    Book GetBook(int id);
-    List<Book> GetBooks();
-    int GetBookAmount();
-    int GetGenresAmount();
-    int? GetMinPublishedYearByGenre(int genreId);
-    int? GetMaxPublishedYearByGenre(int genreId);
-    int GetAmountByPublishedYear(int year);
-    int GetAmountByGenre(int genreId);
+    Task AddBookAsync(Book book);
+    Task UpdateBookAsync(Book book);
+    Task DeleteBookAsync(int id);
+    Task<List<Book>> SearchByAuthorAsync(string fullname);
+    Task<List<Book>> SearchByGenreAsync(int genreId);
+    Task<Book> GetBookAsync(int id);
+    Task<List<Book>> GetBooksAsync();
+    Task<int> GetBookAmountAsync();
+    Task<int> GetGenresAmountAsync();
+    Task<int?> GetMinPublishedYearByGenreAsync(int genreId);
+    Task<int?> GetMaxPublishedYearByGenreAsync(int genreId);
+    Task<int> GetAmountByPublishedYearAsync(int year);
+    Task<int> GetAmountByGenreAsync(int genreId);
 }
