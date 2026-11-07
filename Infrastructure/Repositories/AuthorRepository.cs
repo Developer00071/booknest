@@ -7,37 +7,36 @@ namespace Infrastructure.Repositories;
 
 public class AuthorRepository : IAuthorRepository
 {
-    public async Task AddAuthorAsync(Author author)
+    public async Task<bool> AddAuthorAsync(Author author)
     {
         await using var connection = Database.Connection();
         await connection.OpenAsync();
         const string query = "insert into authors(fullname, country, birthyear) values(@fullname, @country, @birthyear)";
-        await connection.ExecuteAsync(query, author);
+        return await connection.ExecuteAsync(query, author) > 0;
     }
 
-    public async Task UpdateAuthorAsync(Author author)
+    public async Task<bool> UpdateAuthorAsync(Author author)
     {
         await using var connection = Database.Connection();
         await connection.OpenAsync();
         const string query = "update authors set fullname = @fullname, country = @country, birthyear = @birthyear where id = @id";
-        await connection.ExecuteAsync(query, author);
-        System.Console.WriteLine("Updated!");
+        return await connection.ExecuteAsync(query, author) > 0;
     }
 
-    public async Task DeleteAuthorAsync(int id)
+    public async Task<bool> DeleteAuthorAsync(int id)
     {
         await using var connection = Database.Connection();
         await connection.OpenAsync();
         const string query = "delete from authors where id = @id";
-        await connection.ExecuteAsync(query, new { id });
+        return await connection.ExecuteAsync(query, new { id }) > 0;
     }
 
-    public async Task<Author> GetAuthorAsync(int id)
+    public async Task<Author?> GetAuthorAsync(int id)
     {
         await using var connection = Database.Connection();
         await connection.OpenAsync();
         const string query = "select id, fullname, country, birthyear from authors where id = @id";
-        var author = await connection.QuerySingleAsync<Author>(query, new { id });
+        var author = await connection.QuerySingleOrDefaultAsync<Author>(query, new { id });
         return author;
     }
 

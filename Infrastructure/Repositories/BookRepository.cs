@@ -8,31 +8,30 @@ namespace Infrastructure.Repositories;
 
 public class BookRepository : IBookRepository
 {
-    public async Task AddBookAsync(Book book)
+    public async Task<bool> AddBookAsync(Book book)
     {
         await using var connection = Database.Connection();
         await connection.OpenAsync();
         var query = @"insert into books(title, publishedyear, totalcopies) values
         (@title, @publishedyear, @totalcopies)";
-        await connection.ExecuteAsync(query, book);
-        
+        return await connection.ExecuteAsync(query, book) > 0;
     }
     
 
-    public async Task DeleteBookAsync(int id)
+    public async Task<bool> DeleteBookAsync(int id)
     {
         await using var conn = Database.Connection();
         await conn.OpenAsync();
         var query = $"delete from books where id=@id";
-       await conn.ExecuteAsync(query, new {id});
+        return await conn.ExecuteAsync(query, new { id }) > 0;
     }
 
-    public async Task<Book> GetBookAsync(int id)
+    public async Task<Book?> GetBookAsync(int id)
     {
         await using var connection = Database.Connection();
         await connection.OpenAsync();
         var query = "select * from books where id = @id";
-        var book = await connection.QuerySingleAsync<Book>(query,new{id});
+        var book = await connection.QuerySingleOrDefaultAsync<Book>(query, new { id });
         return book;
     }
 
@@ -45,12 +44,12 @@ public class BookRepository : IBookRepository
         return books.ToList();
     }
 
-    public async Task UpdateBookAsync(Book book)
+    public async Task<bool> UpdateBookAsync(Book book)
     {
         await using var connection = Database.Connection();
         await connection.OpenAsync();
         var query = "update books set title = @title, publishedyear = @publishedyear, totalcopies = @totalcopies where id = @id";
-        await connection.ExecuteAsync(query,book);
+        return await connection.ExecuteAsync(query, book) > 0;
     }
     public async Task<List<Book>> SearchByAuthorAsync(string fullname)
     {
