@@ -52,12 +52,6 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "dependencies": {
-            "Npgsql": {
-              "target": "Package",
-              "version": "[10.0.3, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
@@ -733,11 +727,17 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
-            "Dapper": {
+            "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[2.1.89, )"
+              "version": "[10.0.15, )"
             },
-            "Npgsql": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[10.0.3, )"
             }

@@ -1,10 +1,22 @@
-﻿using System.Collections;
-using Domain.Models;
+﻿using Domain.Models;
+using Infrastructure.Data;
 using Infrastructure.Repositories;
-using Dapper;
+using Microsoft.EntityFrameworkCore;
 
-var repo = new BookRepository();
-var authorRepo = new AuthorRepository();
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "Set the ConnectionStrings__DefaultConnection environment variable before running the console app.");
+}
+
+var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+    .UseNpgsql(connectionString)
+    .Options;
+
+await using var dbContext = new ApplicationDbContext(options);
+var repo = new BookRepository(dbContext);
+var authorRepo = new AuthorRepository(dbContext);
 
 while (true)
 {
@@ -46,11 +58,17 @@ while (true)
             var py = Convert.ToInt32(Console.ReadLine());
             System.Console.Write("Enter total copies: ");
             var tc = Convert.ToInt32(Console.ReadLine());
+            System.Console.Write("Enter book author id: ");
+            var bookAuthorId = Convert.ToInt32(Console.ReadLine());
+            System.Console.Write("Enter book genre id: ");
+            var bookGenreId = Convert.ToInt32(Console.ReadLine());
             var bbb = new Book()
             {
                 Title = t,
                 PublishedYear = py,
-                TotalCopies = tc
+                TotalCopies = tc,
+                AuthorId = bookAuthorId,
+                GenreId = bookGenreId
             };
             await repo.AddBookAsync(bbb);
             break;
@@ -63,12 +81,18 @@ while (true)
             var upy = Convert.ToInt32(Console.ReadLine());
             System.Console.Write("Enter total copies: ");
             var utc = Convert.ToInt32(Console.ReadLine());
+            System.Console.Write("Enter author id: ");
+            var updateBookAuthorId = Convert.ToInt32(Console.ReadLine());
+            System.Console.Write("Enter genre id: ");
+            var updateBookGenreId = Convert.ToInt32(Console.ReadLine());
             var ubbb = new Book()
             {
                 Id = uid,
                 Title = ut,
                 PublishedYear = upy,
-                TotalCopies = utc
+                TotalCopies = utc,
+                AuthorId = updateBookAuthorId,
+                GenreId = updateBookGenreId
             };
             await repo.UpdateBookAsync(ubbb);
             break;
